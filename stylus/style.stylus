@@ -1,0 +1,147 @@
+$color1 = #f4d35d
+$color2 = #db5b4a
+$color3 = #e2bb7f
+$color4 = #f67b7d
+$color5 = #a1775a
+*
+  box-sizing: border-box
+body
+  font-family: 'Open Sans'
+  font-weight: 400
+  text-align: center
+.blocks
+  position: fixed
+  bottom: 0
+  z-index: 1
+  list-style-type: none
+  display: flex
+  width: 100%
+  margin: 0
+  padding: 0
+  &__block
+    will-change: transform
+    position: relative
+    height: 20vh
+    flex: 1
+    transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1)
+    &:nth-child(1)
+      background: $color1
+      transform-origin: 0% 100%
+    &:nth-child(2)
+      background: $color2
+      transform-origin: 25% 100%
+    &:nth-child(3)
+      background: $color3
+      transform-origin: 50% 100%
+    &:nth-child(4)
+      background: $color4
+      transform-origin: 75% 100%
+    &:nth-child(5)
+      background: $color5
+      transform-origin: 100% 100%
+    &.active
+      z-index: 2
+.blocks-content
+  list-style-type: none
+  margin: 0
+  padding: 0
+  position: absolute
+  bottom: 0
+  left: 0
+  height: 100vh
+  width: 100%
+  &__content
+    will-change: transform, opacity
+    display: flex
+    align-items: center
+    justify-content: center
+    text-align: center
+    flex-direction: column
+    position: fixed
+    width: 100%
+    z-index: 3
+    top: 0
+    left: 0
+    height: 100vh
+    padding: 10vw
+    font-size: 20px
+    opacity: 0
+    visibility: hidden
+    text-align: center
+    transform: scale(0.9)
+    transition: all .3s .2s ease-out
+    &.active
+      opacity: 1
+      transform: scale(1)
+      visibility: visible
+  .blocks__content-close
+    position: absolute
+    right: 2vw
+    top: 2vh
+    font-size: 30px
+    cursor: pointer
+    transition: all .2s ease-out
+    &:hover
+      transform: scale(1.1)
+  p
+    font-size: 16px
+    line-height: 2
+    max-width: 800px
+  h2
+    padding: 15px 30px
+    font-weight: 300
+    letter-spacing: 6px
+    box-shadow: inset 0 0 0 3px black
+.blocks-names
+  position: fixed
+  bottom: 0
+  left: 0
+  z-index: 2
+  width: 100%
+  list-style-type: none
+  margin: 0
+  padding: 0
+  display: flex
+  font-size: 18px
+  letter-spacing: 4px
+  cursor: pointer
+  transition: all .15s ease-out
+  .blocks__name
+    flex: 1
+    height: 20vh
+    display: flex
+    align-items: center
+    justify-content: center
+/* Demo */
+main
+  position: relative
+  z-index: 1
+  padding: 3vh 5vw
+  height: 80vh
+  display: flex
+  flex-flow: column wrap
+  justify-content: center
+  background: rgba(#edc982, 0.85)
+  h1
+    margin: 0
+    font-weight: 300
+    color: #38C5B9
+    a
+      font-size: 48px
+  p
+    font-weight: 300
+    font-size: 16px
+    max-width: 340px
+    margin: 7px auto
+  a
+    text-decoration: none
+    color: #38C5B9
+    font-size: 30px
+  .plate
+    position: absolute
+    top: 50%
+    left: 50%
+    max-width: 380px
+    width: 100%
+    transform: translate(-50%, -50%)
+    z-index: -1
