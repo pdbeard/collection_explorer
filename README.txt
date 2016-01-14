@@ -1,3 +1,6 @@
+Close button doesn't work unless in hosted or on brackets live edit. 
+
+
 
 A Material Design inspired expanding overlay. Great for showcasing content in an interesting format. Built with Jade, Stylus, and CoffeeScript.
 
