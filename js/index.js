@@ -1,5 +1,5 @@
 (function() {
-  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime;
+  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick;
 
   block = $('.blocks__block');
   bname = $('.blocks__name');
@@ -12,11 +12,19 @@
   xVal = Math.round(wWidth / bWidth) + 0.03;
   yVal = wHeight / bHeight + 0.03;
 
+  var autoRun = 0;
+  var autoNum = 0;
+
+
   expand = function()
   {
 	var aBlock;
-	num = $(this).index();
+
+	if(autoRun ==0){num = $(this).index();}
+	else if (autoRun ==1){num = autoNum;}
+
 	aBlock = block.eq(num);
+
 	if (!aBlock.hasClass('active'))
 	{
 	  bname.css('opacity', '0');
@@ -27,6 +35,7 @@
 	  aBlock.addClass('active');
 	  openContent();
 	}
+	console.log(num);
   };
 
   openContent = function()
@@ -37,7 +46,6 @@
 	});
 	aContent = content.eq(num);
 	aContent.addClass('active');
-	console.log(aContent);
 	aContent.children(0).addClass('active');
 
 	$(".slideshow.active > div:gt(0)").hide();
@@ -64,7 +72,11 @@
 	});
 	block.removeClass('active');
 	content.removeClass('active');
-	aContent.children(0).removeClass('active');
+
+	if (aContent !=null){
+		aContent.children(0).removeClass('active');
+	}
+
 	clearInterval(slideTime);
   };
 
@@ -92,9 +104,31 @@
 	}
   };
 
-
+if(autoRun == 0)
+{
   $(window).on('resize', updateValues);
   bname.on('click', expand);
   closeBtn.on('click', closeContent);
+}
+else if (autoRun ==1)
+{
+
+	autoPick = setInterval(function(){
+		autoRotate();
+	},10000);
+
+	autoRotate = function()
+	{
+		console.log('AutoPick');
+		closeContent();
+		setTimeout(function(){expand()}, 2000);
+		if (autoNum < 6){
+			autoNum++;
+		}else{
+			closeContent();
+			autoNum=0;
+		}
+	}
+}
 
 }).call(this);
