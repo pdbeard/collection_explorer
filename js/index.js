@@ -1,7 +1,8 @@
 (function() {
-  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun;
+  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun, whichSlide;
 
   autoNum = 0;
+  whichSlide = 0;
   block = $('.blocks__block');
   bname = $('.blocks__name');
   content = $('.blocks-content__content');
@@ -25,11 +26,12 @@
 
 	if(autoRun ==0){
 		num = $(this).index();
+		console.log('----------');
 		console.log('You picked category '+num);
 	}
 	else if (autoRun ==1){
 		num = autoNum;
-
+		console.log('----------');
 		console.log('Auto picked category '+num);
 	}
 
@@ -55,31 +57,62 @@
 	});
 
 	aContent = content.eq(num);
+
 	var slideShow = aContent.children(0).prop('id');
 	var slides = slideList[0]["slideshows"][slideShow];
-	var i =0;
+	whichSlide =0;
 
 	aContent.addClass('active');
 
-	console.log('----------');
+
 	console.log('Playing: '+aContent.children(0).prop('id'));
 	console.log('Which includes '+slides.length+' images');
 	console.log('----------');
 
+
+
 	slideTime = setInterval(function()
 	{
-		$("#"+slideShow).attr("src",slides[i].address);
-		console.log(slides[i].address);
+		$("#"+slideShow).attr("src",slides[whichSlide].address);
+		console.log(slides[whichSlide].address);
 
-		if(i < slides.length - 1){
-			i++;
+		if(whichSlide < slides.length - 1){
+			whichSlide++;
 		}
 		else{
-			i=0;
+			whichSlide=0;
 			console.log('Restart Loop');
 		}
 	},  5000);
+
+
   };
+
+  nextSlide = function()
+  {
+	var slideShow = aContent.children(0).prop('id');
+	var slides = slideList[0]["slideshows"][slideShow];
+
+
+
+	if(whichSlide < slides.length - 1){
+
+		$("#"+slideShow).attr("src",slides[whichSlide].address);
+		console.log(slides[whichSlide].address);
+		whichSlide++;
+	}
+	else{
+
+		whichSlide=0;
+		$("#"+slideShow).attr("src",slides[whichSlide].address);
+		console.log(slides[whichSlide].address);
+		console.log('Restart Loop');
+	}
+
+	if (slideTime != null){
+		clearInterval(slideTime);
+	}
+  }
 
   closeContent = function()
   {
@@ -98,7 +131,6 @@
 	});
 	block.removeClass('active');
 	content.removeClass('active');
-
 
 	clearInterval(slideTime);
   };
@@ -131,6 +163,7 @@
 	{
 	  $(window).on('resize', updateValues);
 	  bname.on('click', expand);
+	  //content.on('click', nextSlide);
 	  closeBtn.on('click', closeContent);
 	}
 	else if (autoRun ==1)
