@@ -237,8 +237,45 @@ main .plate {
 	position: fixed;
 	right: 0;
 	top: 0;
-
 	box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.blocks-content .blocks__content-next {
+  position: absolute;
+  right: 1vw;
+  bottom: 45vh;
+  font-size: 5vw;
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.blocks-content .blocks__content-next:hover {
+  -webkit-transform: scale(1.1);
+		  transform: scale(1.1);
+}
+.blocks-content .blocks__content-previous {
+  position: absolute;
+  left: 1vw;
+  bottom: 45vh;
+  font-size: 5vw;
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.blocks-content .blocks__content-previous:hover {
+  -webkit-transform: scale(1.1);
+		  transform: scale(1.1);
+}
+.autotoggle:hover {
+  -webkit-transform: scale(1.1);
+		  transform: scale(1.1);
+}
+.autotoggle{
+ position: absolute;
+ font-size: 3vw;
+ bottom:25vh;
+ left :40vw;
+ color:white;
 }
 
 #slideshow {

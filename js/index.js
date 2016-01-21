@@ -1,42 +1,41 @@
 (function() {
-  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun, whichSlide;
+  //Globals
+  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun, whichSlide, nextBtn, prevBtn, slides, slideShow;
 
-  autoNum = 0;
-  whichSlide = 0;
-  block = $('.blocks__block');
-  bname = $('.blocks__name');
-  content = $('.blocks-content__content');
+  block    = $('.blocks__block');
+  bname    = $('.blocks__name');
+  content  = $('.blocks-content__content');
+  nextBtn  = $('.blocks__content-next');
+  prevBtn  = $('.blocks__content-previous');
   closeBtn = $('.blocks__content-close');
-  wHeight = $(window).outerHeight();
-  wWidth = $(window).outerWidth();
-  bHeight = block.outerHeight();
-  bWidth = block.outerWidth();
+
+  wHeight  = $(window).outerHeight();
+  wWidth   = $(window).outerWidth();
+  bHeight  = block.outerHeight();
+  bWidth   = block.outerWidth();
   xVal = Math.round(wWidth / bWidth) + 0.03;
   yVal = wHeight / bHeight + 0.03;
+  autoNum  = -1;
 
-  totalNum = 6; // Number of Categories
+  //Settings
+  totalNum = 6;   // Number of Categories
+  autoRun  = false; // Autorun toggle
 
-  autoRun = 0;  // 1 for autorun
-				// 0 for interation
-
-
+  //Chooses and animates category expansion
   expand = function()
   {
 	var aBlock;
+	console.log('----------');
 
-	if(autoRun ==0){
+	if(!autoRun){
 		num = $(this).index();
-		console.log('----------');
 		console.log('You picked category '+num);
 	}
-	else if (autoRun ==1){
+	else if (autoRun){
 		num = autoNum;
-		console.log('----------');
 		console.log('Auto picked category '+num);
 	}
-
 	aBlock = block.eq(num);
-
 	if (!aBlock.hasClass('active'))
 	{
 	  bname.css('opacity', '0');
@@ -49,6 +48,7 @@
 	}
   };
 
+  //Opens and finds content for expanded block
   openContent = function()
   {
 	content.css({
@@ -56,26 +56,24 @@
 	  '-webkit-transition': 'all 0.3s 0.4s ease-out'
 	});
 
+	//Determines content, grabs images from JSON file.
 	aContent = content.eq(num);
-
-	var slideShow = aContent.children(0).prop('id');
-	var slides = slideList[0]["slideshows"][slideShow];
-	whichSlide =0;
+	slideShow = aContent.children(0).prop('id');
+	slides = slideList[0]["slideshows"][slideShow];
+	whichSlide =-1;
 
 	aContent.addClass('active');
-
-
 	console.log('Playing: '+aContent.children(0).prop('id'));
 	console.log('Which includes '+slides.length+' images');
 	console.log('----------');
 
+	switchSlide();
+  };
 
-
+  //Timer for Slideshow
+  switchSlide = function(){
 	slideTime = setInterval(function()
 	{
-		$("#"+slideShow).attr("src",slides[whichSlide].address);
-		console.log(slides[whichSlide].address);
-
 		if(whichSlide < slides.length - 1){
 			whichSlide++;
 		}
@@ -83,40 +81,57 @@
 			whichSlide=0;
 			console.log('Restart Loop');
 		}
-	},  5000);
-
-
-  };
+		$("#"+slideShow).attr("src",slides[whichSlide].address);
+		console.log(slides[whichSlide].address);
+	},  10000);
+  }
 
   nextSlide = function()
   {
-	var slideShow = aContent.children(0).prop('id');
-	var slides = slideList[0]["slideshows"][slideShow];
-
-
-
-	if(whichSlide < slides.length - 1){
-
-		$("#"+slideShow).attr("src",slides[whichSlide].address);
-		console.log(slides[whichSlide].address);
+	autoRun=false;
+	if(whichSlide < slides.length-1)
+	{
 		whichSlide++;
 	}
-	else{
-
+	else
+	{
 		whichSlide=0;
-		$("#"+slideShow).attr("src",slides[whichSlide].address);
-		console.log(slides[whichSlide].address);
 		console.log('Restart Loop');
 	}
-
+	$("#"+slideShow).attr("src",slides[whichSlide].address);
+	console.log(slides[whichSlide].address);
 	if (slideTime != null){
 		clearInterval(slideTime);
 	}
+	if (autoPick != null){
+		clearInterval(autoPick);
+	}
   }
 
+  prevSlide = function()
+  {
+	if(whichSlide > 0)
+	{
+		whichSlide--;
+	}
+	else
+	{
+		whichSlide=slides.length-1;
+	}
+	$("#"+slideShow).attr("src",slides[whichSlide].address);
+	console.log(slides[whichSlide].address);
+	if (slideTime != null){
+		clearInterval(slideTime);
+	}
+	if (autoPick != null){
+		clearInterval(autoPick);
+	}
+  }
+
+  //Closes content blocks
   closeContent = function()
   {
-	if (aContent !=null){
+	if (aContent !=null){  //Removes image instantly
 		$("#"+aContent.children(0).prop('id')).attr("src","");
 	}
 
@@ -159,32 +174,32 @@
 	}
   };
 
-	if(autoRun == 0)
-	{
-	  $(window).on('resize', updateValues);
-	  bname.on('click', expand);
-	  //content.on('click', nextSlide);
-	  closeBtn.on('click', closeContent);
+  //Loops through category blocks
+  autoRotate = function()
+  {
+	closeContent();
+	if (autoNum < totalNum-1){
+		autoNum++;
+	}else{
+		closeContent();
+		autoNum=0;
 	}
-	else if (autoRun ==1)
-	{
+	expand();
+  }
+
+  //Starts Autorun Timer
+  autoStart = function(){
+	if (autoRun){
 		autoPick = setInterval(function(){
 			autoRotate();
 		},2000);
-
-		autoRotate = function()
-		{
-
-			closeContent();
-			//setTimeout(function(){expand()}, 2000);
-			expand();
-			if (autoNum < totalNum-1){
-				autoNum++;
-			}else{
-				closeContent();
-				autoNum=0;
-			}
-		}
 	}
+  }
+
+  $(window).on('resize', updateValues);
+  bname.on('click', expand);
+  closeBtn.on('click', closeContent);
+  nextBtn.on('click', nextSlide);
+  prevBtn.on('click', prevSlide);
 
 }).call(this);
