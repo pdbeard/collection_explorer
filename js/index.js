@@ -1,8 +1,8 @@
-(function() {
-  //Globals
-  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun, switchSlide, whichSlide, nextBtn, prevBtn, slides, slideShow, nextSlide, prevSlide, autoRotate, autoStart, buttonPress, mc;
 
- //mc = new Hammer($('#app'));
+(function () {
+  
+  //Globals
+  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick, autoNum, totalNum, autoRun, switchSlide, whichSlide, nextBtn, prevBtn, slides, slideShow, nextSlide, prevSlide, autoRotate, autoStart, buttonPress, hamOn, mc;
 
   block    = $('.blocks__block');
   bname    = $('.blocks__name');
@@ -17,8 +17,79 @@
   bWidth   = block.outerWidth();
   xVal = Math.round(wWidth / bWidth) + 0.03;
   yVal = wHeight / bHeight + 0.03;
-  autoNum  = -1;
+  autoNum  = -1; 
+    
+  //Add Swipe gesture for touch    
+  hamOn = document.getElementById('app');
+  mc = new Hammer(hamOn);
+  
+  //Kinect Sensor
+ var isSensorConnected = false;
 
+    var configuration = {
+
+        "interaction" : {
+            "enabled": false,
+        },
+     
+        "userviewer" : {
+            "enabled": false,
+            //"resolution": "640x480", //320x240, 160x120, 128x96, 80x60
+            //"userColors": { "engaged": 0x7fffffff, "tracked": 0x7fffffff },
+            //"defaultUserColor": 0x70000000, //RGBA 2147483647
+        },
+     
+        "backgroundRemoval" : {
+            "enabled": false,
+            //"resolution": "640x480", //1280x960
+        },
+     
+        "skeleton" : {
+            "enabled": true,
+        },
+     
+        "sensorStatus" : {
+            "enabled": true,
+        }
+     
+    };
+
+    // Create sensor and UI adapter layers
+    var sensor = Kinect.sensor(Kinect.DEFAULT_SENSOR_NAME, function (sensorToConfig, isConnected) {
+        isSensorConnected = isConnected;
+        sensorToConfig.postConfig(configuration);
+        console.log('isSensorConnected',isSensorConnected);
+    });
+
+    sensor.addEventHandler(function (event) {
+                
+        switch (event.category) {
+            case Kinect.SENSORSTATUS_EVENT_CATEGORY:
+                switch (event.eventType) {
+                    case Kinect.SENSORSTATUSCHANGED_EVENT_TYPE:
+                    var connected = event.connected;
+                    isSensorConnected = event.connected;
+                    console.log('isSensorConnected',isSensorConnected);
+                        break;
+                }
+                break;
+        }
+    });
+    
+    KinectGestures.init(sensor,{
+        debug:true,
+        registerPlayer:true,
+        numPlayersToRegister:1,
+        canvasElementID:'test',
+        log:true,
+        logElementID:'test',
+    });
+    
+    KinectGestures.on(KinectGestures.GestureType.Swipe, function(event){
+    console.log(event.data);
+    // event.data.direction = KinectGestures.Direction.Left | KinectGestures.Direction.Right
+});
+    
   //Settings
   totalNum = 6;   // Number of Categories
   autoRun  = false; // Autorun toggle
@@ -71,8 +142,8 @@
 
 	switchSlide();
 
-	//mc.on("swiperight",nextSlide);
-	//mc.on("swipeleft",prevSlide);
+	mc.on("swiperight",nextSlide);
+	mc.on("swipeleft",prevSlide);
   };
 
   //Timer for Slideshow
