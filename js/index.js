@@ -1,6 +1,8 @@
 (function() {
   //Globals
-  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun, whichSlide, nextBtn, prevBtn, slides, slideShow;
+  var bHeight, bWidth, block, bname, closeBtn, closeContent, content, expand, openContent, updateValues, wHeight, wWidth, xVal, yVal, num, aContent, slideTime, autoPick,autoNum, totalNum,autoRun, switchSlide, whichSlide, nextBtn, prevBtn, slides, slideShow, nextSlide, prevSlide, autoRotate, autoStart, buttonPress, mc;
+
+ //mc = new Hammer($('#app'));
 
   block    = $('.blocks__block');
   bname    = $('.blocks__name');
@@ -68,6 +70,9 @@
 	console.log('----------');
 
 	switchSlide();
+
+	//mc.on("swiperight",nextSlide);
+	//mc.on("swipeleft",prevSlide);
   };
 
   //Timer for Slideshow
@@ -189,11 +194,16 @@
 
   //Starts Autorun Timer
   autoStart = function(){
-	if (autoRun){
-		autoPick = setInterval(function(){
-			autoRotate();
-		},2000);
-	}
+	autoPick = setInterval(function(){
+		autoRotate();
+	},120000);
+  }
+
+
+  function buttonPress(pressed)
+  {
+	  console.log('yeha '+pressed);
+	  pressed();
   }
 
   $(window).on('resize', updateValues);
@@ -201,5 +211,7 @@
   closeBtn.on('click', closeContent);
   nextBtn.on('click', nextSlide);
   prevBtn.on('click', prevSlide);
+
+  if (autoRun){autoStart();}
 
 }).call(this);
